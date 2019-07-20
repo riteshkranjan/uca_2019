@@ -1,2 +1,3 @@
-python-workspace/poker/__pycache__/*
-python-workspace/poker/env/*
+**/__pycache__/*
+**/env/*
+**/.vscode/*
