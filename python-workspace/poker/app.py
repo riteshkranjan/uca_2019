@@ -61,8 +61,6 @@ def show_card():
 
 def get_balance(name):
     s = db.session.query(Balance).filter(Balance.user_name==name).first()
-    print(s)
-    print(type(s))
     if s is None:
         return 0
     return s.user_balance
@@ -172,6 +170,5 @@ class Balance(db.Model):
 if __name__ == '__main__':
     app.config['DEBUG'] = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@localhost:5433/poker'
-    #print(app.config)
     db.create_all()
     app.run(host='0.0.0.0')

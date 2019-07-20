@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 {% block poker %}
-<div class="row">
+<div class="container-fluid">
+    <div class="row">
         <div class="col-sm">
-                <p style="color: white">welcome to Poker Game</p>     
+            <p style="color: white;text-align: center">welcome to Poker Game</p>
+        </div>
+        <div class="col-md-4 center-block">
+            <form class="col-md-4 center-block" method="GET" action="/deal">
+                <input type="submit" class="btn btn-primary center-block" value="Start">
+            </form>
         </div>
     </div>
-<form method="GET" action="/deal">
-    <input type="submit" value="Start">
-</form>
+</div>
 {% endblock %}
