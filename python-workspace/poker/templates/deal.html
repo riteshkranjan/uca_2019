@@ -13,8 +13,8 @@
     </div>
     <div style="padding: 15px" class="row">
         {% for card in cards %}
-        <div class="col-md">
-            <img width=40% height=auto class="img-responsive" src="/static/images/{{card}}.png">
+        <div class="col-sm imgwrapper">
+            <img width=35% height=auto class="img-responsive" src="/static/images/{{card}}.png">
         </div>
         {% endfor %}
     </div>
@@ -25,8 +25,8 @@
     </div>
     <div style="padding: 15px" class="row">
         {% for card in other_card %}
-        <div class="col-md">
-            <img width=40% height=auto class="img-responsive" src="/static/images/cover.png">
+        <div class="col-sm imgwrapper">
+            <img width=35% height=auto class="img-responsive" src="/static/images/cover.png">
         </div>
         {% endfor %}
     </div>
