@@ -66,8 +66,8 @@ def fold():
     h.user_cards=str(user_cards)
     h.computer_cards = str(computer_cards)
     h.center_cards = str(center_cards)
-    h.computer_best_cards=computer_best_card
-    h.user_best_cards=user_best_card
+    h.computer_best_cards=str(computer_best_card)
+    h.user_best_cards=str(user_best_card)
     h.winner = "Computer-Fold"
     db.session.add(h)
     db.session.commit()
@@ -99,8 +99,8 @@ def show_card():
     h.user_cards=str(user_cards)
     h.computer_cards = str(computer_cards)
     h.center_cards = str(center_cards)
-    h.computer_best_cards=computer_best_card
-    h.user_best_cards=user_best_card
+    h.computer_best_cards=str(computer_best_card)
+    h.user_best_cards=str(user_best_card)
     h.winner = result
     db.session.add(h)
     db.session.commit()
@@ -213,7 +213,8 @@ class Balance(db.Model):
 
 if __name__ == '__main__':
     app.config['DEBUG'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@localhost/poker'
+    #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@localhost/poker'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
     #print(app.config)
     db.create_all()
     app.run(host='0.0.0.0')
