@@ -4,53 +4,101 @@
 
 
 <div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-1">
+            <img class="img-fluid" width=100 height=100  src="/static/images/user.png">
+        </div>
+        <div class="col-sm-4">
+            {% for card in cards %}
+            <img class="img-fluid" width=100 height=100 src="/static/images/{{card}}.png">
+            {% endfor %}
+        </div>
+        <div class="col-sm-2">
+        </div>
+        <div class="col-sm-1">
+            <img class="img-fluid" width=100 height=100 src="/static/images/computer.png">
+        </div>
+        <div class="col-sm-4">
+            {% for card in other_card %}
+            <img class="img-fluid" width=100 height=100  src="/static/images/cover.png">
+            {% endfor %}
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-sm-2">
+            <p style="text-align: left" class="h2 header"> Common</p>
+        </div>
+        <div class="col-sm-1">
+        </div>
+        <div class="col-sm-9">
+            {% for i in range(5) %}
 
-    <div class="row">
-        <div class="col-sm">
-                <p style="text-align: left" class="h2 header"> User </p>        
-                <p style="color: white">Stats: {{win}}/{{total}}   balance: {{user_balance}}</p>     
+            {% if stage == 0%}
+            <img class="img-fluid" width=100 height=100  src="/static/images/cover.png">
+            {% elif stage == 1 and i < 3%}
+            <img class="img-fluid" width=100 height=100  src="/static/images/{{center_cards[i]}}.png">
+            {% elif stage == 1 and i >= 3%}
+            <img class="img-fluid" width=100 height=100  src="/static/images/cover.png">
+            {% elif stage == 2 and i < 4%}
+            <img class="img-fluid" width=100 height=100  src="/static/images/{{center_cards[i]}}.png">
+            {% elif stage == 2 and i >= 4%}
+            <img class="img-fluid" width=100 height=100  src="/static/images/cover.png">
+            {% elif stage > 2 %}
+            <img class="img-fluid" width=100 height=100  src="/static/images/{{center_cards[i]}}.png">
+            {% else %}
+            <img class="img-fluid" width=100 height=100  src="/static/images/cover.png">
+            {% endif %}
+            {% endfor %}
         </div>
-    </div>
-    <div style="padding: 15px" class="row">
-        {% for card in cards %}
-        <div class="col-sm imgwrapper">
-            <img width=35% height=auto class="img-responsive" src="/static/images/{{card}}.png">
-        </div>
-        {% endfor %}
-    </div>
-    <div class="row">
-        <div class="col-sm">
-            <p style="text-align: left" class="h2 header"> Computer </p>
-        </div>
-    </div>
-    <div style="padding: 15px" class="row">
-        {% for card in other_card %}
-        <div class="col-sm imgwrapper">
-            <img width=35% height=auto class="img-responsive" src="/static/images/cover.png">
-        </div>
-        {% endfor %}
     </div>
 </div>
 <br />
 <div class="container-fluid">
     <div class="row">
-        <div class="deal-buttons">
-            <form method="GET" action="/deal">
-                <input type="submit" class="btn btn-primary" value="Deal">
+        <div class="deal-buttons col-sm-12">
+            {% if stage < 4 %}
+            <form method="POST" action="/pass">
+                <input type="hidden" name="user_cards" value="{{cards}}">
+                <input type="hidden" name="computer_cards" value="{{other_card}}">
+                <input type="hidden" name="center_cards" value="{{center_cards}}">
+                <input type="hidden" name="stage" value="{{stage}}">
+                <input type="hidden" name="bid_total" value="{{bid_total}}">
+                <input type="submit" class="btn-primary" value="Pass">
             </form>
-            <form method="GET" action="/reset">
-                <input type="submit" class="btn  btn-primary" value="Reset">
+            <form method="POST" action="/fold">
+                <input type="hidden" name="user_cards" value="{{cards}}">
+                <input type="hidden" name="computer_cards" value="{{other_card}}">
+                <input type="hidden" name="center_cards" value="{{center_cards}}">
+                <input type="hidden" name="stage" value="{{stage}}">
+                <input type="hidden" name="bid_total" value="{{bid_total}}">
+                <input type="submit" class="btn-primary" value="Fold">
             </form>
+            <form method="POST" action="/raise">
+                <input type="hidden" name="user_cards" value="{{cards}}">
+                <input type="hidden" name="computer_cards" value="{{other_card}}">
+                <input type="hidden" name="center_cards" value="{{center_cards}}">
+                <input type="hidden" name="stage" value="{{stage}}">
+                <input type="hidden" name="bid_total" value="{{bid_total}}">
+                <input type="submit" class="btn-primary" value="Raise">
+            </form>
+            {% endif %}
+
+            {% if stage == 4 %}
             <form method="POST" action="/show">
                 <input type="hidden" name="user_cards" value="{{cards}}">
                 <input type="hidden" name="computer_cards" value="{{other_card}}">
-                <input type="submit" class="btn btn-primary" value="Show">
+                <input type="hidden" name="center_cards" value="{{center_cards}}">
+                <input type="hidden" name="stage" value="{{stage}}">
+                <input type="hidden" name="bid_total" value="{{bid_total}}">
+                <input type="submit" class="btn-primary" value="Show">
+            </form>
+            {% endif %}
+            <form method="GET" action="/reset">
+                <input type="submit" class="btn-primary" value="Reset">
             </form>
         </div>
-        
     </div>
-
+    {% include 'stats.html' %}
 </div>
-
-
 {% endblock%}

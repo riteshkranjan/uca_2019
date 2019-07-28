@@ -1,4 +1,4 @@
-package com.uca.test;
+package com.uca.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,45 +9,23 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-public class UnittestRunner {
+public class SortRunner {
 
-	public static void main(String[] args) throws SecurityException, IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, ClassNotFoundException, IOException, InstantiationException, NoSuchMethodException {
+	public static void main(String[] args)
+			throws SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+			ClassNotFoundException, IOException, InstantiationException, NoSuchMethodException {
 
 		Class<?>[] array = findAllClasses("com.uca");
 
 		for (Class<?> testClass : array) {
-			
+
 			Method[] methods = testClass.getMethods();
 			for (Method m : methods) {
-				Unittest annotation = m.getAnnotation(Unittest.class);
-				
-				if (annotation != null) {
+				if (m.getAnnotation(Sort.class) != null) {
 					Object o = testClass.newInstance();
-					boolean isException = false;
-					System.out.print(testClass.getName()+ " : executing test case " + m.getName() + " : ");
-					try {
-						m.invoke(o);
-					} catch (InvocationTargetException | IllegalAccessException e) {
-						if (e.getCause() != null) {
-							isException = true;
-							if (!e.getCause().getClass().getName().equalsIgnoreCase(annotation.expected().getName())) {
-								throw new AssertionError(String.format("expected %s but actual is %s",
-										annotation.expected().getName(), e.getClass().getName()));
-							}
-							if (!annotation.msg().equals("") && !e.getCause().getMessage().equals(annotation.msg())) {
-								throw new AssertionError(String.format("expected %s but actual is %s", annotation.msg(),
-										e.getMessage()));
-							}
-							Method method = annotation.myMessage().getMethod("print");
-							method.invoke(annotation.myMessage().newInstance()); 
-						}
-					} catch (Exception e) {
-						throw e;
-					}
-					if (!annotation.expected().getName().equals("java.lang.Throwable") && !isException)
-						throw new AssertionError("exception expected here");
-					System.out.println("Test case passed");
+					System.out.print(testClass.getName() + " : executing test case " + m.getName() + " : ");
+					testClass.getMethod("sort").invoke(o);
+					m.invoke(o);
 				}
 			}
 		}

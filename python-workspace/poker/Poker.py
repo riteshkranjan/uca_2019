@@ -17,7 +17,11 @@ def two_pair(ranks):
 
 def straight(ranks):
   'Return True if the ordered ranks form a 5 card straight'
-  if (max(ranks) - min(ranks) == 4) and len(set(ranks)) == 5:
+  if len(set(ranks)) != 5:
+    return False
+  if (max(ranks) - min(ranks) == 4):
+    return True
+  if ranks[0]==14 and ranks[1]==5 and ranks[4]==2:
     return True
   return False
   
@@ -65,16 +69,84 @@ def poker(hands):
     "Return the best hand: poker([hand,...]) => hand"
     return max(hands, key=hand_rank)
 
+def build_best_hand(hands_2, hands_5):
+  hands = []
+  hands.append(hands_5)
+  
+  for i in hands_2:
+    hand = []
+    hand.append(i)
+    for j in hands_5:
+      for k in hands_5:
+        if j != k:
+          hand.append(k)
+      hands.append(hand.copy())
+      hand = []
+      hand.append(i)
+  hand = [hands_2[0],hands_2[1],0,0,0]
+  l = len(hands_5)
+  for i in range(l):
+    hand[2] = hands_5[i]
+    for j in range(i+1,l):
+      if i==j or j == l:
+        continue
+      hand[3] = hands_5[j]
+      for k in range(j+1, l):
+        if k==j or k==l:
+          continue
+        hand[4] = hands_5[k]
+        hands.append(hand.copy())
+  for i in hands:
+    i.sort()
+  return poker(hands)
+
+def getWinner(user_rank, computer_rank):
+    if user_rank[0] > computer_rank[0]:
+        return "user"
+    if user_rank[0] < computer_rank[0]:
+        return "computer"
+    if user_rank[0] == computer_rank[0]:
+        if user_rank[1] > computer_rank[1]:
+            return "user"
+        if user_rank[1] < computer_rank[1]:
+            return "computer"
+        if user_rank[1] == computer_rank[1]:
+          if len(user_rank) == 2:
+            return "Draw"
+          if user_rank[2] > computer_rank[2]:
+            return "user"
+          if user_rank[2] < computer_rank[2]:
+            return "computer"
+          if user_rank[2] == computer_rank[2]:
+            print(user_rank)
+            print(computer_rank)
+            return "Draw"
+    return "I don't know"
+
 def test():
-    "Test cases for the functions in poker program"
-    sf = "6C 7C 8C 9C 10C".split() # Straight Flush
+    ubc = build_best_hand("50 60".split(), "Q3 91 Q0 42 T0".split())
+    cbc = build_best_hand("53 K0".split(), "Q3 91 Q0 42 T0".split())
+    uc = hand_rank(ubc)
+    cc = hand_rank(cbc)
+    assert uc[0] == 1
+    assert uc[1] == 12
+    assert uc[2] == [12, 12, 10, 9, 6]
+    assert cc[0] == 1
+    assert cc[1] == 12
+    assert cc[2] == [13, 12, 12, 10, 9]
+    assert getWinner(uc,cc) == "computer"
+    sf = "2C 3C 4C 5C AC".split()
     fk = "9D 9H 9S 9C 7D".split() # 4 of a kind
     fh = "10D 10C 10H 7C 7D".split() # Full House
-    tp = "10D 9H TH 7C 3S".split() # Two Pair
+    tp = "KC KS TD 9H TH".split() # Two Pair
+    assert build_best_hand("KS KD".split(), sf) == sf
+    assert build_best_hand("2S 2D".split(),fk) == fk
+    assert build_best_hand("KS QD".split(),fh) == fh
+    assert build_best_hand("2S 3D".split(),tp) == tp
     
     fkranks = card_ranks(fk)
     tpranks = card_ranks(tp)
-
+    print(tpranks)
     assert kind(4, fkranks) == 9
     assert kind(3, fkranks) == None
     assert kind(2, fkranks) == None
@@ -96,6 +168,6 @@ def test():
 	    isException = True
     assert isException == True
     return 'tests pass'
-  
-if __name__ == '__main__':
-    print(test())
+
+if __name__ == '__main__':  
+  print(test())

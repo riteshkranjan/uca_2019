@@ -27,7 +27,7 @@ public class TestPoker {
 		new PokerHand("K0,K0,K2,100,101");
 	}
 
-	@Unittest(expected = InvalidGameException.class, msg = "Invalid poker hand")
+	@Unittest(expected = InvalidGameException.class, msg = "Invalid poker hand", myMessage=Unittest.FailedMessage.class)
 	public void testPokerThrowsExceptionWithMoreThan5Cards() {
 		new PokerHand("K0,K1,K2,100,101,K3");
 	}
