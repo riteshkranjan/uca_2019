@@ -1,0 +1,18 @@
+.card-image {
+    width:100px;
+}
+@media only screen and (max-width : 767px) {
+    .card-image {
+        width:50px;
+    }
+    .deal-buttons{
+        padding-left:50px!important;
+    }
+    .padding-adjust-mob{
+        padding-left: 0;
+        padding-right:0;
+    }
+    .hide-mob{
+        display: none;
+    }
+}
