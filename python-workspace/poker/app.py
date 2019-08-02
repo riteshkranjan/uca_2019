@@ -114,8 +114,6 @@ def show_card():
 
 def get_balance(name):
     s = db.session.query(Balance).filter(Balance.user_name==name).first()
-    print(s)
-    print(type(s))
     if s is None:
         return 0
     return s.user_balance
