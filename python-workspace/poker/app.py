@@ -1,6 +1,10 @@
 from flask import Flask,render_template,redirect, request, make_response
 from flask_sqlalchemy  import SQLAlchemy
 from Poker import hand_rank, build_best_hand, getWinner
+from logging.handlers import RotatingFileHandler
+from time import strftime
+import logging
+import traceback
 import ast 
 import os
 import random 
@@ -209,10 +213,43 @@ class Balance(db.Model):
     user_balance = db.Column(db.Float)
     user_name = db.Column(db.String)
 
+@app.after_request
+def after_request(response):
+    """ Logging after every request. """
+    if response.status_code not in [500,200,304] :
+        ts = strftime('[%Y-%b-%d %H:%M]')
+        logger.error('%s %s %s %s %s %s',
+                      ts,
+                      request.remote_addr,
+                      request.method,
+                      request.scheme,
+                      request.full_path,
+                      response.status)
+    return response
+
+
+@app.errorhandler(Exception)
+def exceptions(e):
+    """ Logging after every Exception. """
+    ts = strftime('[%Y-%b-%d %H:%M]')
+    tb = traceback.format_exc()
+    logger.error('%s %s %s %s %s 5xx INTERNAL SERVER ERROR\n%s',
+                  ts,
+                  request.remote_addr,
+                  request.method,
+                  request.scheme,
+                  request.full_path,
+                  tb)
+    return "Internal Server Error", 500
+
 if __name__ == '__main__':
     app.config['DEBUG'] = True
     #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@localhost/poker'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
     #print(app.config)
     db.create_all()
+    handler = RotatingFileHandler('poker_app.log', maxBytes=10000, backupCount=3)        
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.ERROR)
+    logger.addHandler(handler)
     app.run(host='0.0.0.0')
