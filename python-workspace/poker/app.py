@@ -242,6 +242,14 @@ def exceptions(e):
                   tb)
     return "Internal Server Error", 500
 
+@app.route('/log')
+def content():
+	text = open('poker_app.log', 'r')
+	content = text.read()
+	text.close()
+	return render_template('log.html', text=content)
+
+
 if __name__ == '__main__':
     app.config['DEBUG'] = True
     #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@localhost/poker'
