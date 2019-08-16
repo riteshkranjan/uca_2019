@@ -1,5 +1,6 @@
 from flask import Flask,render_template,redirect, request, make_response
 from flask_sqlalchemy  import SQLAlchemy
+from sqlalchemy import desc
 from Poker import hand_rank, build_best_hand, getWinner
 from logging.handlers import RotatingFileHandler
 from time import strftime
@@ -45,6 +46,13 @@ def deal_cards():
     user_balance= update_balance('user',-10.0)
     user_balance=get_balance('user')
     bid_total = 10.0
+    h = History()
+    h.user_cards=str(user_cards)
+    h.computer_cards = str(computer_cards)
+    h.center_cards = str(center_cards)
+    h.winner = "pending"
+    db.session.add(h)
+    db.session.commit()
     return render_template("deal.html", stage=0,bid_total=bid_total, center_cards=center_cards,user_balance=user_balance, cards = user_cards, other_card=computer_cards, total=total_game, win=game_won)
 
 @app.route('/raise', methods=['POST'])
@@ -249,6 +257,10 @@ def content():
 	text.close()
 	return render_template('log.html', text=content)
 
+@app.route("/history")
+def print_history():
+    h = History.query.order_by(desc(History.id)).limit(10).all()
+    return render_template('history.html', history=h)
 
 if __name__ == '__main__':
     app.config['DEBUG'] = True
