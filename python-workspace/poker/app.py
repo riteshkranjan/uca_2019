@@ -78,8 +78,6 @@ def fold():
     return redirect("/deal")
 
 def update_history(id, status):
-    print(id)
-    print(status)
     h = db.session.query(History).filter(History.id==id).first()
     h.winner = status
     db.session.commit()
@@ -87,10 +85,12 @@ def update_history(id, status):
 def update_history_last(id, status, user_best_card, computer_best_card):
     print(id)
     print(status)
+    print(user_best_card)
+    print(computer_best_card)
     h = db.session.query(History).filter(History.id==id).first()
     h.winner = status
-    h.user_best_cards = user_best_card
-    h.computer_best_cards = computer_best_card
+    h.user_best_cards = str(user_best_card)
+    h.computer_best_cards = str(computer_best_card)
     db.session.commit()
 
 @app.route('/pass', methods=['POST'])
