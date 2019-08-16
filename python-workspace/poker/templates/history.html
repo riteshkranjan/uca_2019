@@ -1,0 +1,29 @@
+<pre>
+    <table>
+        <thead>
+            <tr>
+                    <th>id</th>
+        <th>user_cards</th>
+        <th>computer_cards</th>
+        <th>center_cards</th>
+        <th>user_best_cards</th>
+        <th>computer_best_cards</th>
+        <th>winner</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for h in history%}
+        <tr>
+                <td>{{h.id}}</td>
+            <td>{{h.user_cards}}</td>
+            <td>{{h.computer_cards}}</td>
+            <td>{{h.center_cards}}</td>
+            <td>{{h.user_best_cards}}</td>
+            <td>{{h.computer_best_cards}}</td>
+            <td>{{h.winner}}</td>
+        </tr>
+        {% endfor%}
+    </tbody>
+</table>
+
+</pre>
