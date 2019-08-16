@@ -118,8 +118,6 @@ def getWinner(user_rank, computer_rank):
           if user_rank[2] < computer_rank[2]:
             return "computer"
           if user_rank[2] == computer_rank[2]:
-            print(user_rank)
-            print(computer_rank)
             return "Draw"
     return "I don't know"
 

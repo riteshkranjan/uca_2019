@@ -53,7 +53,7 @@ def deal_cards():
     h.winner = "pending"
     db.session.add(h)
     db.session.commit()
-    return render_template("deal.html", stage=0,bid_total=bid_total, center_cards=center_cards,user_balance=user_balance, cards = user_cards, other_card=computer_cards, total=total_game, win=game_won)
+    return render_template("deal.html", h_id = h.id, stage=0,bid_total=bid_total, center_cards=center_cards,user_balance=user_balance, cards = user_cards, other_card=computer_cards, total=total_game, win=game_won)
 
 @app.route('/raise', methods=['POST'])
 def raise_bid():
@@ -65,7 +65,7 @@ def raise_bid():
     user_cards = ast.literal_eval(request.form.get("user_cards")) 
     computer_cards = ast.literal_eval(request.form.get("computer_cards")) 
     center_cards = ast.literal_eval(request.form.get("center_cards")) 
-    return render_template("deal.html", stage=stage,bid_total=bid_total, center_cards=center_cards,user_balance=user_balance, cards = user_cards, other_card=computer_cards, total=total_game, win=game_won)
+    return render_template("deal.html", h_id = request.form.get("h_id"), stage=stage,bid_total=bid_total, center_cards=center_cards,user_balance=user_balance, cards = user_cards, other_card=computer_cards, total=total_game, win=game_won)
 
 @app.route('/fold', methods=['POST'])
 def fold():
@@ -74,16 +74,24 @@ def fold():
     center_cards = ast.literal_eval(request.form.get("center_cards")) 
     user_best_card = build_best_hand(user_cards,center_cards)
     computer_best_card = build_best_hand(computer_cards, center_cards)
-    h = History()
-    h.user_cards=str(user_cards)
-    h.computer_cards = str(computer_cards)
-    h.center_cards = str(center_cards)
-    h.computer_best_cards=str(computer_best_card)
-    h.user_best_cards=str(user_best_card)
-    h.winner = "Computer-Fold"
-    db.session.add(h)
-    db.session.commit()
+    update_history_last(request.form.get("h_id"), "Computer-Fold",user_best_card,computer_best_card)
     return redirect("/deal")
+
+def update_history(id, status):
+    print(id)
+    print(status)
+    h = db.session.query(History).filter(History.id==id).first()
+    h.winner = status
+    db.session.commit()
+
+def update_history_last(id, status, user_best_card, computer_best_card):
+    print(id)
+    print(status)
+    h = db.session.query(History).filter(History.id==id).first()
+    h.winner = status
+    h.user_best_cards = user_best_card
+    h.computer_best_cards = computer_best_card
+    db.session.commit()
 
 @app.route('/pass', methods=['POST'])
 def pass_bid():
@@ -94,7 +102,7 @@ def pass_bid():
     user_cards = ast.literal_eval(request.form.get("user_cards")) 
     computer_cards = ast.literal_eval(request.form.get("computer_cards")) 
     center_cards = ast.literal_eval(request.form.get("center_cards")) 
-    return render_template("deal.html", stage=stage,bid_total=bid_total, center_cards=center_cards,user_balance=user_balance, cards = user_cards, other_card=computer_cards, total=total_game, win=game_won)
+    return render_template("deal.html", h_id = request.form.get("h_id"), stage=stage,bid_total=bid_total, center_cards=center_cards,user_balance=user_balance, cards = user_cards, other_card=computer_cards, total=total_game, win=game_won)
 
 @app.route('/show', methods=['POST'])
 def show_card():
@@ -107,15 +115,7 @@ def show_card():
     computer_rank = hand_rank(computer_best_card)
     result = getWinner(user_rank,computer_rank)
     game_won, total_game = increment_score(result)
-    h = History()
-    h.user_cards=str(user_cards)
-    h.computer_cards = str(computer_cards)
-    h.center_cards = str(center_cards)
-    h.computer_best_cards=str(computer_best_card)
-    h.user_best_cards=str(user_best_card)
-    h.winner = result
-    db.session.add(h)
-    db.session.commit()
+    update_history_last(request.form.get("h_id"), result, user_best_card, computer_best_card)
     user_balance = get_balance('user')
     bid_total = float(request.form.get("bid_total"))
     if result == 'user':
