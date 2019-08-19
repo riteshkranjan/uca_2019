@@ -1,6 +1,11 @@
 .card-image {
     width:100px;
 }
+.card-image-bnw {
+    width:100px;
+    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%);
+}
 @media only screen and (max-width : 767px) {
     .card-image {
         width:50px;

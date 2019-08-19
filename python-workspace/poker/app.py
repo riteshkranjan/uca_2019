@@ -107,6 +107,8 @@ def show_card():
     center_cards = ast.literal_eval(request.form.get("center_cards")) 
     user_best_card = build_best_hand(user_cards,center_cards)
     computer_best_card = build_best_hand(computer_cards, center_cards)
+    user_unused_card = list(set(user_cards+center_cards) - set(user_best_card))
+    computer_unused_card = list(set(computer_cards+center_cards) - set(computer_best_card))
     user_rank = hand_rank(user_best_card)
     computer_rank = hand_rank(computer_best_card)
     result = getWinner(user_rank,computer_rank)
@@ -114,11 +116,20 @@ def show_card():
     update_history_last(request.form.get("h_id"), result, user_best_card, computer_best_card)
     user_balance = get_balance('user')
     bid_total = float(request.form.get("bid_total"))
+    user_desc = m[user_rank[0]]
+    comp_desc = m[computer_rank[0]]
+    msg = ""
+    if user_desc == comp_desc:
+        msg = "Both got {} but {} has higher cards".format(user_desc ,result)
+    else:
+        msg = "User has {} while computer has {}".format(user_desc,comp_desc)
+    
     if result == 'user':
         user_balance= update_balance('user',2*bid_total)
     if result == 'Draw':
         user_balance = update_balance('user', bid_total) 
-    return render_template("show.html",center_cards=center_cards,user_balance=user_balance, cards = user_cards, other_card=computer_cards, result=result, user_desc=m[user_rank[0]], comp_desc=m[computer_rank[0]], total=total_game, win=game_won)
+        msg = "Both have {}".format(user_desc)
+    return render_template("show.html",bid_total=None, computer_unused_card=computer_unused_card,user_unused_card=user_unused_card,center_cards=center_cards,user_balance=user_balance, cards = user_cards, other_card=computer_cards, result=result, msg=msg, total=total_game, win=game_won)
 
 def get_balance(name):
     s = db.session.query(Balance).filter(Balance.user_name==name).first()
