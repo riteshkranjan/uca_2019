@@ -7,15 +7,14 @@
     }
 
     .deal-buttons {
-        
-        padding-left: 400px!important;
+
+        padding-left: 400px !important;
     }
 
     .deal-buttons form {
         float: left;
         margin-right: 5%;
     }
-   
 </style>
 
 <head>
@@ -26,7 +25,7 @@
 
     <link rel='stylesheet' href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" crossorigin='anonymous'>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
+
 </head>
 
 
@@ -49,17 +48,17 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
 </body>
-    <script>
+<script>
     $(document).ready(function () {
         function disablePrev() { window.history.forward() }
         window.onload = disablePrev();
         window.onpageshow = function (evt) { if (evt.persisted) disableBack() }
     });
-    window.setTimeout(function() {
-    $(".alert").fadeTo(500, 0).slideUp(500, function(){
-        $(this).remove(); 
-    });
-}, 4000);
+    /*window.setTimeout(function () {
+        $(".alert").fadeTo(500, 0).slideUp(500, function () {
+            $(this).remove();
+        });
+    }, 4000);*/
 </script>
 
 </html>
