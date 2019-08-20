@@ -4,3 +4,7 @@
 **/*.db
 **/*.log
 **/*.log.*
+
+**/*.pem
+**/awz_connect.sh
+**/poker_deployment.sh
