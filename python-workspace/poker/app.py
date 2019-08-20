@@ -270,7 +270,7 @@ def print_history():
     return render_template('history.html', history=h)
 
 if __name__ == '__main__':
-    app.config['DEBUG'] = True
+    #app.config['DEBUG'] = True
     #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@localhost/poker'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
     #print(app.config)
