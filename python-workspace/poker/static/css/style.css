@@ -15,6 +15,11 @@
     .card-image {
         width:50px;
     }
+    .card-image-bnw {
+        width:50px;
+        -webkit-filter:brightness(65%); /* Safari 6.0 - 9.0 */
+        filter: brightness(65%);
+    }
     .deal-buttons{
         padding-left:50px!important;
     }
