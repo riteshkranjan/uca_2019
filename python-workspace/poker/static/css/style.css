@@ -3,8 +3,13 @@
 }
 .card-image-bnw {
     width:100px;
-    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
-    filter: grayscale(100%);
+    -webkit-filter:brightness(65%); /* Safari 6.0 - 9.0 */
+    filter: brightness(65%);
+}
+.z-alert{
+    position:relative;
+    z-index: 999;
+    opacity: 0.6;
 }
 @media only screen and (max-width : 767px) {
     .card-image {

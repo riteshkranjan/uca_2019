@@ -9,7 +9,15 @@
 
         <div class="col-sm-4 col-5 col-lg-4">
             {% for card in cards %}
+            {% if result == "user" %}
+            {% if card in user_unused_card %}
+            <img class="img-fluid card-image-bnw" src="/static/images/{{card}}.png">
+            {% else %}
             <img class="img-fluid card-image" src="/static/images/{{card}}.png">
+            {% endif %}
+            {% else %}
+            <img class="img-fluid card-image-bnw" src="/static/images/{{card}}.png">
+            {% endif %}
             {% endfor %}
         </div>
         <div class="col-sm-2 col-2 col-lg-2 hide-mob">
@@ -19,7 +27,15 @@
         </div>
         <div class="col-sm-4 col-5 col-lg-4">
             {% for card in other_card %}
+            {% if result == "computer" %}
+            {% if card in computer_unused_card %}
+            <img class="img-fluid card-image-bnw" src="/static/images/{{card}}.png">
+            {% else %}
             <img class="img-fluid card-image" src="/static/images/{{card}}.png">
+            {% endif %}
+            {% else %}
+            <img class="img-fluid card-image-bnw" src="/static/images/{{card}}.png">
+            {% endif %}
             {% endfor %}
         </div>
     </div>
@@ -32,7 +48,13 @@
         </div>
         <div class="col-sm-9 col-lg-9 col-12">
             {% for card in center_cards %}
+            {% if result == "user" and card in user_unused_card %}
+            <img class="img-fluid card-image-bnw" src="/static/images/{{card}}.png">
+            {% elif result == "computer" and card in computer_unused_card %}
+            <img class="img-fluid card-image-bnw" src="/static/images/{{card}}.png">
+            {% else %}
             <img class="img-fluid card-image" src="/static/images/{{card}}.png">
+            {% endif %}
             {% endfor %}
         </div>
     </div>
@@ -51,25 +73,28 @@
     </div>
     {% include 'stats.html' %}
 </div>
-<i class='far fa-frown'></i>
 {% if result == "user"%}
-<div class="alert alert-success" role="alert">
+<div class="alert alert-success z-alert" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
     <i class='far fa-grin-alt'></i>
     <strong>Congratulations! </strong>User won. {{msg}}
 </div>
 {% endif %}
 {% if result == "computer"%}
-<div class="alert alert-danger" role="alert">
+<div class="alert alert-danger z-alert" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
     <i class='far fa-frown'></i>
     <strong>Sorry! </strong>User lost. {{msg}}
 </div>
 {% endif %}
 {% if result == "Draw"%}
-<div class="alert alert-info" role="alert">
+<div class="alert alert-info z-alert" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
     <i class='far fa-flushed'></i>
     <strong>No result! </strong>Equal cards. {{msg}}
 </div>
 {% endif %}
-
-</div>
 {% endblock%}

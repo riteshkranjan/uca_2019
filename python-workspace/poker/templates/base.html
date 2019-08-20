@@ -55,6 +55,11 @@
         window.onload = disablePrev();
         window.onpageshow = function (evt) { if (evt.persisted) disableBack() }
     });
+    window.setTimeout(function() {
+    $(".alert").fadeTo(500, 0).slideUp(500, function(){
+        $(this).remove(); 
+    });
+}, 4000);
 </script>
 
 </html>

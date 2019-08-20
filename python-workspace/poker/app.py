@@ -12,7 +12,7 @@ import random
 app = Flask(__name__)
 db = SQLAlchemy(app)
 app.config['image_folder'] = os.path.join("static", "images")
-m = {8:"Straight Flush",7:"Four of a kind",6:"Full house",5:"Flush",4:"Straight",3:"Three of a kind",2:"Two pairs",1:"Pair",0:"High Card"}
+m = {8:"Straight Flush",7:"Four of a kind",6:"Full house",5:"Flush",4:"Straight",3:"Three of a kind",2:"Two pairs",1:"Single Pair",0:"High Card"}
 def shuffle_cards():
     cardNumbers = '23456789TJQKA'
     cardSuits = '0123'
@@ -270,7 +270,7 @@ def print_history():
     return render_template('history.html', history=h)
 
 if __name__ == '__main__':
-    #app.config['DEBUG'] = True
+    app.config['DEBUG'] = True
     #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@localhost/poker'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
     #print(app.config)
