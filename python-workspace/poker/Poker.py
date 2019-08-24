@@ -22,6 +22,8 @@ def straight(ranks):
   if (max(ranks) - min(ranks) == 4):
     return True
   if ranks[0]==14 and ranks[1]==5 and ranks[4]==2:
+    ranks[0] = 1
+    ranks.sort(reverse=True)
     return True
   return False
   
@@ -141,7 +143,7 @@ def test():
     assert build_best_hand("2S 2D".split(),fk) == fk
     assert build_best_hand("KS QD".split(),fh) == fh
     assert build_best_hand("2S 3D".split(),tp) == tp
-    
+    assert hand_rank(sf) == (8,5)
     fkranks = card_ranks(fk)
     tpranks = card_ranks(tp)
     print(tpranks)
