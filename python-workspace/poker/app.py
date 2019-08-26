@@ -94,19 +94,25 @@ def fold():
     center_cards = ast.literal_eval(request.form.get("center_cards")) 
     user_best_card = build_best_hand(user_cards,center_cards)
     computer_best_card = build_best_hand(computer_cards, center_cards)
-    update_history_last(request.form.get("h_id"), "Computer-Fold",user_best_card,computer_best_card)
+    user_rank = hand_rank(user_best_card)
+    computer_rank = hand_rank(computer_best_card)
+    user_desc = m[user_rank[0]]
+    comp_desc = m[computer_rank[0]]
+    update_history_last(request.form.get("h_id"), "Computer-Fold",user_best_card,computer_best_card, user_desc, comp_desc)
     return redirect("/deal")
 
-def update_history(id, status):
+"""def update_history(id, status):
     h = db.session.query(History).filter(History.id==id).first()
     h.winner = status
-    db.session.commit()
+    db.session.commit()"""
 
-def update_history_last(id, status, user_best_card, computer_best_card):
+def update_history_last(id, status, user_best_card, computer_best_card, user_desc, comp_desc):
     h = db.session.query(History).filter(History.id==id).first()
     h.winner = status
     h.user_best_cards = str(user_best_card)
     h.computer_best_cards = str(computer_best_card)
+    h.user_desc = user_desc
+    h.comp_desc = comp_desc
     db.session.commit()
 
 @app.route('/pass', methods=['POST'])
@@ -141,11 +147,12 @@ def show_card():
     computer_rank = hand_rank(computer_best_card)
     result = getWinner(user_rank,computer_rank)
     game_won, total_game = increment_score(result, uid)
-    update_history_last(request.form.get("h_id"), result, user_best_card, computer_best_card)
+    
     user_balance = get_balance(uid)
     bid_total = float(request.form.get("bid_total"))
     user_desc = m[user_rank[0]]
     comp_desc = m[computer_rank[0]]
+    update_history_last(request.form.get("h_id"), result, user_best_card, computer_best_card, user_desc, comp_desc)
     msg = ""
     if user_desc == comp_desc:
         msg = "Both got {} but {} has higher cards".format(user_desc ,result)
@@ -257,6 +264,8 @@ class History(db.Model):
     winner = db.Column(db.String)
     date_updated = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     uid = db.Column(db.String)
+    user_desc = db.Column(db.String)
+    comp_desc = db.Column(db.String)
 
 class Balance(db.Model):
     id = db.Column(db.String, primary_key=True)
