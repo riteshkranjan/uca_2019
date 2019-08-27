@@ -223,6 +223,7 @@ def increment_score(winner,uid):
     if len(s) == 0:
         score = Score()
         score.id = uid
+        score.games_won = 0
         if winner == 'user':
             score.games_won = 1
         score.total_games = 1
