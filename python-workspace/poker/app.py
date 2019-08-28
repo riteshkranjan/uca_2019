@@ -39,12 +39,22 @@ def shuffle_cards():
 
 @app.route('/')
 def home():
-   uid = generate_uuid()
-   reset_score(uid)
-   reset_balance(uid)
-   resp = make_response(render_template("home.html")) 
-   resp.set_cookie('uid', uid, expires=datetime.datetime.now() + datetime.timedelta(days=30))
-   return resp
+    uid = request.cookies.get('uid')
+    if uid is None or uid == "":
+        uid = generate_uuid()
+        reset_score(uid)
+        reset_balance(uid)
+    resp = make_response(render_template("home.html")) 
+    resp.set_cookie('uid', uid, expires=datetime.datetime.now() + datetime.timedelta(days=30))
+    return resp
+
+@app.route('/reset')
+def reset():
+    uid = request.cookies.get('uid')
+    if uid is not None:
+        reset_score(uid)
+        reset_balance(uid)
+    return redirect("/")
 
 @app.route('/deal')
 def deal_cards():
@@ -243,11 +253,7 @@ def get_score(uid):
         return 0,0
     return s[0].games_won, s[0].total_games
         
-@app.route('/reset')
-def reset():
-    uid = request.cookies.get('uid')
-    #print(">>> in deal method",uid)
-    return redirect("/")
+
 
 class Score(db.Model):
     id = db.Column(db.String, primary_key=True)
