@@ -62,9 +62,16 @@ def deal_cards():
     #print(">>> in deal method",uid)
     if uid is None or uid == "":
         return redirect("/")
+    #print(">> hand id ",  request.form.get("h_id"))
+    #print(">> stage id ",  request.form.get("stage"))
+    if request.form.get("h_id") is None:
+        #not page refresh 
+        #print(">>> not a refresh in deal method")
+        user_balance= update_balance(uid,-10.0)
+    else:
+        logger.error('%s refresh done in deal method for history id %s\n',strftime('[%Y-%b-%d %H:%M]'), h_id)
     user_cards,computer_cards,center_cards = shuffle_cards()
     game_won, total_game = get_score(uid)
-    user_balance= update_balance(uid,-10.0)
     user_balance=get_balance(uid)
     bid_total = 10.0
     h = History()
@@ -73,6 +80,7 @@ def deal_cards():
     h.center_cards = str(center_cards)
     h.winner = "pending"
     h.uid = uid
+    h.stage = 0
     db.session.add(h)
     db.session.commit()
     return render_template("deal.html", h_id = h.id, stage=0,bid_total=bid_total, center_cards=center_cards,user_balance=user_balance, cards = user_cards, other_card=computer_cards, total=total_game, win=game_won)
@@ -81,22 +89,37 @@ def deal_cards():
 def raise_bid():
     uid = request.cookies.get('uid')
     #print(">>> in raise method",uid)
+    #print(">> hand id ",  request.form.get("h_id"))
+    #print(">> stage id ",  request.form.get("stage"))
     if uid is None or uid == "":
         return redirect("/")
-    update_balance(uid,-20)
+    h_id = request.form.get("h_id")
+    stage = int(request.form.get("stage"))
+    bid_total = float(request.form.get("bid_total"))
+    if get_stage_in_history(h_id) + 1 == stage:
+        #not a refresh case
+        #print(">>> not a refresh in raise method")
+        update_balance(uid,-20)
+        bid_total = bid_total + 20
+        increment_stage_in_history(h_id)
+    else:
+        logger.error('%s refresh done in raise method for history id %s\n',strftime('[%Y-%b-%d %H:%M]'), h_id)
+        #print(">>> refresh in raise method")
+    
     user_balance=get_balance(uid)
-    bid_total = float(request.form.get("bid_total")) + 20
-    stage = int(request.form.get("stage")) + 1
+    #stage = int(request.form.get("stage")) + 1
     game_won, total_game = get_score(uid)
     user_cards = ast.literal_eval(request.form.get("user_cards")) 
     computer_cards = ast.literal_eval(request.form.get("computer_cards")) 
     center_cards = ast.literal_eval(request.form.get("center_cards")) 
-    return render_template("deal.html", h_id = request.form.get("h_id"), stage=stage,bid_total=bid_total, center_cards=center_cards,user_balance=user_balance, cards = user_cards, other_card=computer_cards, total=total_game, win=game_won)
+    return render_template("deal.html", h_id = h_id, stage=stage,bid_total=bid_total, center_cards=center_cards,user_balance=user_balance, cards = user_cards, other_card=computer_cards, total=total_game, win=game_won)
 
 @app.route('/fold', methods=['POST'])
 def fold():
     uid = request.cookies.get('uid')
     #print(">> in fold method with id",uid)
+    #print(">> hand id ",  request.form.get("h_id"))
+    #print(">> stage id ",  request.form.get("stage"))
     if uid is None or uid == "":
         return redirect("/")
     user_cards = ast.literal_eval(request.form.get("user_cards")) 
@@ -129,11 +152,24 @@ def update_history_last(id, status, user_best_card, computer_best_card, user_des
 def pass_bid():
     uid = request.cookies.get('uid')
     #print(">>> in pass method",uid)
+    #print(">> hand id ",  request.form.get("h_id"))
+    #print(">> stage id ",  request.form.get("stage"))
     if uid is None or uid == "":
         return redirect("/")
+
+    h_id = request.form.get("h_id")
+    stage = int(request.form.get("stage"))
+    
+    if get_stage_in_history(h_id) + 1 == stage:
+        #not a refresh case
+        #print(">>> not a refresh in raise method")
+        increment_stage_in_history(h_id)
+    else:
+        #print(">>> refresh in raise method")
+        logger.error('%s refresh done in pass method for history id %s\n',strftime('[%Y-%b-%d %H:%M]'), h_id)
     user_balance=get_balance(uid)
     bid_total = float(request.form.get("bid_total"))
-    stage = int(request.form.get("stage")) + 1
+    #stage = int(request.form.get("stage")) + 1
     game_won, total_game = get_score(uid)
     user_cards = ast.literal_eval(request.form.get("user_cards")) 
     computer_cards = ast.literal_eval(request.form.get("computer_cards")) 
@@ -144,8 +180,11 @@ def pass_bid():
 def show_card():
     uid = request.cookies.get('uid')
     #print(">>> in show method",uid)
+    #print(">> hand id ",  request.form.get("h_id"))
+    #print(">> stage id ",  request.form.get("stage"))
     if uid is None or uid == "":
         return redirect("/")
+    
     user_cards = ast.literal_eval(request.form.get("user_cards")) 
     computer_cards = ast.literal_eval(request.form.get("computer_cards")) 
     center_cards = ast.literal_eval(request.form.get("center_cards")) 
@@ -156,25 +195,49 @@ def show_card():
     user_rank = hand_rank(user_best_card)
     computer_rank = hand_rank(computer_best_card)
     result = getWinner(user_rank,computer_rank)
-    game_won, total_game = increment_score(result, uid)
-    
     user_balance = get_balance(uid)
     bid_total = float(request.form.get("bid_total"))
     user_desc = m[user_rank[0]]
     comp_desc = m[computer_rank[0]]
-    update_history_last(request.form.get("h_id"), result, user_best_card, computer_best_card, user_desc, comp_desc)
+    h_id = request.form.get("h_id")
+    stage = int(request.form.get("stage"))
     msg = ""
+    game_won = request.form.get("game_won")
+    total_game = request.form.get("total_game")
     if user_desc == comp_desc:
         msg = "Both got {} but {} has higher cards".format(user_desc ,result)
     else:
         msg = "User has {} while computer has {}".format(user_desc,comp_desc)
-    
-    if result == 'user':
-        user_balance= update_balance(uid,2*bid_total)
-    if result == 'Draw':
-        user_balance = update_balance(uid, bid_total) 
-        msg = "Both have {}".format(user_desc)
+    if get_stage_in_history(h_id) + 1 == stage:
+        #print(">>> not a refresh in show method")
+        game_won, total_game = increment_score(result, uid)
+        update_history_last(request.form.get("h_id"), result, user_best_card, computer_best_card, user_desc, comp_desc)
+        if result == 'user':
+            user_balance= update_balance(uid,2*bid_total)
+        if result == 'Draw':
+            user_balance = update_balance(uid, bid_total) 
+            msg = "Both have {}".format(user_desc)
+        increment_stage_in_history(h_id)
+    else:
+        logger.error('%s refresh done in show method for history id %s\n',strftime('[%Y-%b-%d %H:%M]'), h_id)
+        #print(">>> refresh in show method")
     return render_template("show.html", bid_total=None, computer_unused_card=computer_unused_card,user_unused_card=user_unused_card,center_cards=center_cards,user_balance=user_balance, cards = user_cards, other_card=computer_cards, result=result, msg=msg, total=total_game, win=game_won)
+
+
+def get_stage_in_history(id):
+    s = db.session.query(History).filter(History.id==id).all()
+    if len(s) == 0:
+        return -1
+    return s[0].stage
+
+def increment_stage_in_history(id):
+    s = db.session.query(History).filter(History.id==id).all()
+    if len(s) == 0:
+        return
+    h = s[0]
+    h.stage = h.stage+1
+    db.session.add(h)
+    db.session.commit()
 
 def get_balance(uid):
     s = db.session.query(Balance).filter(Balance.id==uid).first()
@@ -273,6 +336,7 @@ class History(db.Model):
     uid = db.Column(db.String)
     user_desc = db.Column(db.String)
     comp_desc = db.Column(db.String)
+    stage = db.Column(db.Integer)
 
 class Balance(db.Model):
     id = db.Column(db.String, primary_key=True)
