@@ -33,7 +33,7 @@ set password
 $ source env/bin/activate   
 now start server	
 
-#DB update steps
+# DB update steps
 Stop server    
 run sqlite3 test.db   
 alter table <tablename> add column <columnname> type <type:integer,float,string>    
