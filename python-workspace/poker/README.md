@@ -32,3 +32,10 @@ set password
 # finally start the server with app.py updated to use postgresql not sqlite
 $ source env/bin/activate   
 now start server	
+
+#DB update steps
+Stop server    
+run sqlite3 test.db   
+alter table <tablename> add column <columnname> type <type:integer,float,string>    
+pull changes    
+start server   
