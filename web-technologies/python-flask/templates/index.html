@@ -1,0 +1,90 @@
+<html>
+
+<head>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" crossorigin="anonymous">
+    <link rel='stylesheet' href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" crossorigin='anonymous'>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+
+<body style="background-color:powderblue;">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-sm-12">
+                <p class="h1 header"> Welcome to Student Record manager </p>
+            </div>
+        </div>
+        <br />
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+
+            <form method="POST" action="/">
+                <div class="col-sm-12">
+                    <label for="name">Name:</label>
+                    <input type="text" name="name" placeholder="enter name">
+
+                    <label for="email">email:</label>
+                    <input type="text" name="email" placeholder="enter email">
+
+                    <label for="gpa">gpa:</label>
+                    <input type="text" name="gpa" placeholder="enter gpa">
+
+                    <input type="submit" class="btn-primary" name="Add">
+                </div>
+            </form>
+
+        </div>
+        <div class="table-responsive">
+
+            <table class="table">
+
+                <tbody>
+                    {% for s in students%}
+                    <form method="POST" action="/update">
+                        <input type="hidden" name="id" value="{{s.id}}">
+                        <input type="text" name="name" value="{{s.name}}">
+                        <input type="text" name="email" value="{{s.email}}">
+                        <input type="text" name="gpa" value="{{s.gpa}}">
+
+                        <input type="submit" class="btn-primary" value="Update">
+                    </form>
+                    <form method="POST" action="/delete">
+                        <input type="hidden" name="id" value="{{s.id}}">
+                        <input type="submit" class="btn-primary" value="Delete">
+                    </form>
+                    <br />
+                    {% endfor %}
+
+                </tbody>
+                <thead>
+                    <tr>
+                        <td>id</td>
+                        <td>name</td>
+                        <td>email</td>
+                        <td>gpa</td>
+                        <td>Date inserted</td>
+                    </tr>
+                </thead>
+                {% for s in students%}
+                <tr>
+
+                    <td>{{s.id}}</td>
+                    <td>{{s.name}}</td>
+                    <td>{{s.email}}</td>
+                    <td>{{s.gpa}}</td>
+                    <td>{{s.date_inserted}}</td>
+
+                </tr>
+                {% endfor %}
+            </table>
+
+        </div>
+
+        <script src="static/js/jquery-3.2.1.slim.min.js"></script>
+        <script src="static/js/popper.min.js"></script>
+        <script src="static/js/bootstrap.min.js"></script>
+</body>
+
+</html>
