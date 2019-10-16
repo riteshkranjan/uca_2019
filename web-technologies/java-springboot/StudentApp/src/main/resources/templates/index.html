@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<link rel="shortcut icon" href="static/favicon.ico">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel='stylesheet'
+	href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+	crossorigin='anonymous'>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body style="background-color: powderblue;">
+	<div class="container-fluid">
+
+		<div class="row">
+			<div class="col-sm-12">
+				<p class="h1 header">Welcome to Student Record manager</p>
+			</div>
+		</div>
+		<br />
+	</div>
+	<div class="container-fluid">
+		<div class="row">
+
+			<form action="#" th:action="@{/}" th:object="${student}"
+				method="post">
+				<div class="col-sm-12">
+					<label for="name">Name:</label> <input type="text"
+						th:field="*{name}" name="name" placeholder="enter name"> <label
+						for="email">email:</label> <input type="text" name="email"
+						th:field="*{email}" placeholder="enter email"> <label
+						for="gpa">gpa:</label> <input type="text" name="gpa"
+						th:field="*{gpa}" placeholder="enter gpa"> <input
+						type="submit" class="btn-primary" name="Add">
+				</div>
+			</form>
+
+		</div>
+		<div class="table-responsive">
+
+			<table class="table">
+
+				<tbody>
+
+					<tr th:each="student : ${students}">
+						<form action="#" th:action="@{edit/{id}(id=${student.id})}"
+							th:object="${student}" method="post">
+							<label for="name">Name:</label> <input type="text"
+								th:value="${student.name}" th:name="name" th:id="name">
+							<label for="email">email:</label> <input type="text"
+								th:value="${student.email}" th:name="email" th:id="email">
+							<label for="gpa">gpa:</label> <input type="text"
+								th:value="${student.gpa}" th:name="gpa" th:id="gpa"> <input
+								type="submit" class="btn-primary" value="Update">
+						</form>
+						<form method="post" action="#"
+							th:action="@{delete/{id}(id=${student.id})}">
+							<input type="submit" class="btn-primary" value="Delete">
+						</form>
+						</br>
+					</tr>
+
+
+				</tbody>
+				<thead>
+					<tr>
+						<td>id</td>
+						<td>name</td>
+						<td>email</td>
+						<td>gpa</td>
+						<td>Date inserted</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="student : ${students}">
+						<td th:text="${student.id}"></td>
+						<td th:text="${student.name}"></td>
+						<td th:text="${student.email}"></td>
+						<td th:text="${student.gpa}"></td>
+						<td th:text=" ${student.insertedDate}"></td>
+					</tr>
+				</tbody>
+			</table>
+
+		</div>
+
+		<script src="js/jquery-3.2.1.slim.min.js"></script>
+		<script src="js/popper.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+</body>
+</html>

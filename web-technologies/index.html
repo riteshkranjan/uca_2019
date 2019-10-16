@@ -1,0 +1,84 @@
+<html>
+
+    <head> 
+		<link rel="shortcut icon" href="static/favicon.ico">
+		<link rel="stylesheet" href="static/css/bootstrap.min.css">
+		<link rel='stylesheet' href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" crossorigin='anonymous'>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	</head>
+   <body style="background-color:powderblue;">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-sm-12">
+                <p class="h1 header"> Welcome to Student Record manager </p>
+            </div>
+        </div>
+        <br />
+    </div>
+  <div class="container-fluid">
+    <div class="row">
+        
+    <form method="POST" action="/">
+	<div class="col-sm-12">
+		<label for="name">Name:</label>
+        <input type="text" name="name" placeholder="enter name">
+		
+		<label for="email">email:</label>
+        <input type="text" name="email" placeholder="enter email">
+		
+		<label for="gpa">gpa:</label>
+        <input type="text" name="gpa" placeholder="enter gpa">
+		
+        <input type="submit" class="btn-primary" name="Add">
+		</div>
+    </form>
+	
+</div>
+<div class="table-responsive">
+
+    <table class="table">
+       
+       <tbody>
+           
+            <form method="POST" action="/update">
+                <input type="hidden" name="id" value="1">
+                <input type="text" name="name" value="Ritesh">
+                <input type="text" name="email" value="a@b.com">
+                <input type="text" name="gpa" value="5.0">
+               
+                <input type="submit" class="btn-primary" value="Update">
+            </form>
+            <form method="POST" action="/delete">
+                <input type="hidden" name="id" value="1">
+                <input type="submit" class="btn-primary" value="Delete">
+            </form>
+        <br/>
+          
+       </tbody>
+       <thead>
+        <tr>
+            <td>id</td>
+            <td>name</td>
+            <td>email</td>
+            <td>gpa</td>
+            <td>Date inserted</td>
+        </tr>
+</thead>
+
+        <tr>
+            <td>1</td>
+            <td>Ritesh</td>
+            <td>a@b.com</td>
+            <td>4.5</td>
+            <td>10/12/2019</td>
+        </tr>
+    </table>
+
+</div>
+
+<script src="static/js/jquery-3.2.1.slim.min.js" ></script>
+    <script src="static/js/popper.min.js" ></script>
+    <script src="static/js/bootstrap.min.js" ></script>
+    </body>
+</html>

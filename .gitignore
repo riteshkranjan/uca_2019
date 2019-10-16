@@ -8,3 +8,5 @@
 **/*.pem
 **/awz_connect.sh
 **/poker_deployment.sh
+
+**/node_modules/*
