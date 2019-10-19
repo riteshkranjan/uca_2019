@@ -1,0 +1,74 @@
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <p class="h1 header"> Welcome to Student Record manager </p>
+        </div>
+    </div>
+    <br />
+</div>
+<div class="container-fluid">
+    <div class="row">
+
+        <form method="POST" action="/">
+            <div class="col-sm-12">
+                <label for="name">Name:</label>
+                <input type="text" name="name" placeholder="enter name">
+
+                <label for="email">email:</label>
+                <input type="text" name="email" placeholder="enter email">
+
+                <label for="gpa">gpa:</label>
+                <input type="text" name="gpa" placeholder="enter gpa">
+
+                <input type="submit" class="btn-primary" name="Add">
+            </div>
+        </form>
+
+    </div>
+    <div class="table-responsive">
+
+        <table class="table">
+
+            <tbody>
+                <div *ngFor="let student of students">
+                    <form method="POST" action="/update">
+                        <input type="hidden" name="id" value={{student._id}}>
+                        <input type="text" name="name" value="{{student.name}}">
+                        <input type="text" name="email" value={{student.email}}>
+                        <input type="text" name="gpa" value={{student.gpa}}>
+
+                        <input type="submit" class="btn-primary" value="Update">
+                    </form>
+                    <form method="POST" action="/delete">
+                        <input type="hidden" name="id" value={{student._id}}>
+                        <input type="submit" class="btn-primary" value="Delete">
+                    </form>
+                    <br />
+                </div>
+
+
+            </tbody>
+        </table>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <td>id</td>
+                    <td>name</td>
+                    <td>email</td>
+                    <td>gpa</td>
+                    <td>Date inserted</td>
+                </tr>
+            </thead>
+            <tr *ngFor="let student of students">
+                <td>{{student._id}}</td>
+                <td>{{student.name}}</td>
+                <td>{{student.email}}</td>
+                <td>{{student.gpa}}</td>
+                <td>{{student.modifiedDate}}</td>
+            </tr>
+        </table>
+
+    </div>
